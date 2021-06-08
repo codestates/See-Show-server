@@ -16,9 +16,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 //라우팅
-app.post('/login', indexRouter.login);
-
-app.get('/accessTokenRequest', indexRouter.accessTokenRequest);
+app.post('/login', indexRouter.login.nat);
+app.post('/oauth_fb', indexRouter.login.fb);
+app.post('/oauth_gg', indexRouter.login.gg);
+app.post('/signUp', indexRouter.signUp);
 
 app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest);
 

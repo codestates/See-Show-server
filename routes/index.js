@@ -1,6 +1,6 @@
 module.exports = {
   login: require('./controllers/login'), // OAuth, 토큰
-  accessTokenRequest: require('./controllers/accessTokenRequest'), // 토큰 유효성 검사
+  signUp: require('./controllers/signUp'), // 회원가입
   refreshTokenRequest: require('./controllers/refreshTokenRequest'), // 토큰 재발급
   myPage: require('./controllers/myPage'), // 회원정보 불러오기
   show: require('./controllers/show'), // 공연 api에서 공연 정보 가져오기, review에 대한 요청 필요
