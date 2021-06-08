@@ -17,7 +17,7 @@ module.exports = {
           res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
           });
-          res.status(201).send({ data: { accessToken }, message: "ok" });
+          res.status(201).send({ data: { accessToken: accessToken }, message: "ok" });
         }
       })
   },
@@ -31,19 +31,20 @@ module.exports = {
     data: {
       client_id: process.env.FB_CLIENT_ID,
       client_secret: process.env.FB_CLIENT_SECRET,
-      code: req.body.authorizationCode
+      code: req.body.authorizationCode,
+      // redirect_uri: 'FILL ME IN'
       }
     }).then((response) => {
       accessToken = response.data.access_token;
-      res.status(200).send({ accessToken: accessToken });
+      res.status(200).send({ accessToken: accessToken, userType: 'fb' });
     }).catch(err => {
       res.status(404)
     })
-    // `https://www.facebook.com/v10.0/dialog/oauth?client_id=317119936709492&redirect_uri=${메인페이지url 넣어주세요}` //client OauthUrl
+    // `https://www.facebook.com/v10.0/dialog/oauth?client_id=317119936709492&redirect_uri=https://show{라우팅}` //client OauthUrl
   },
   gg: (req, res) => {
     
-  }
+  } 
 }
 
 

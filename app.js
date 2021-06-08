@@ -19,8 +19,7 @@ app.use(cookieParser());
 app.post('/login', indexRouter.login.nat);
 app.post('/oauth_fb', indexRouter.login.fb);
 app.post('/oauth_gg', indexRouter.login.gg);
-
-app.get('/accessTokenRequest', indexRouter.accessTokenRequest);
+app.post('/signUp', indexRouter.signUp);
 
 app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest);
 
