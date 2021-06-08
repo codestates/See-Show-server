@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../../models'); // 데이터 베이스 연결 테이블명 User
-const axios = require('axios');
+const { fbOAuth, ggOAuth } = require('./OAuth');
 require('dotenv').config();
 
 module.exports = {
@@ -22,28 +22,20 @@ module.exports = {
       })
   },
   fb: (req, res) => {
-    axios({
-    method: 'post',
-    url: `https://graph.facebook.com/v10.0/oauth/access_token`,
-    headers: {
-      accept: 'application/json',
-      },
-    data: {
-      client_id: process.env.FB_CLIENT_ID,
-      client_secret: process.env.FB_CLIENT_SECRET,
-      code: req.body.authorizationCode,
-      // redirect_uri: 'FILL ME IN'
-      }
-    }).then((response) => {
+    fbOAuth(req)
+    .then((response) => {
       accessToken = response.data.access_token;
       res.status(200).send({ accessToken: accessToken, userType: 'fb' });
     }).catch(err => {
       res.status(404)
     })
-    // `https://www.facebook.com/v10.0/dialog/oauth?client_id=317119936709492&redirect_uri=https://show{라우팅}` //client OauthUrl
+    // `https://www.facebook.com/v10.0/dialog/oauth?client_id=317119936709492&redirect_uri=https://localhost:3000/oauth_fb&state='123123'` //client OauthUrl
   },
   gg: (req, res) => {
-    
+    ggOAuth(req)
+      .then(data => {
+        
+      })
   } 
 }
 

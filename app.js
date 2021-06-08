@@ -17,8 +17,10 @@ app.use(cookieParser());
 
 //라우팅
 app.post('/login', indexRouter.login.nat);
-app.post('/oauth_fb', indexRouter.login.fb);
-app.post('/oauth_gg', indexRouter.login.gg);
+app.post('/oauth_fb', indexRouter.oauth.fbOAuth);
+app.post('/oauth_gg', indexRouter.oauth.ggOAuth);
+
+app.post('/signUp', indexRouter.signUp);
 app.post('/signUp', indexRouter.signUp);
 
 app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest);
