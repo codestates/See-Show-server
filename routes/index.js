@@ -4,7 +4,7 @@ module.exports = {
   refreshTokenRequest: require('./controllers/refreshTokenRequest'), // 완료
   myPage: require('./controllers/myPage'), // 완료
   show: require('./controllers/show'), // 공연 api에서 공연 정보 가져오기, review에 대한 요청 필요
-  location: require('./controllers/location'), // 위치 정보 받아 해당 위치로부터 일정 거리 안에 있는 공연 정보 불러오기
+  recommend: require('./controllers/recommend'), // 완료
   review: require('./controllers/review'), // show 요청 응답 후 요청을 받아 review 요청
   oauth: require('./controllers/OAuth'), // 완료
   firstCheck: require('./controllers/firstCheck'), // 완료
