@@ -16,9 +16,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 //라우팅
-app.post('/login', indexRouter.login);
+app.post('/login', indexRouter.login.nat);
+app.post('/oauth', indexRouter.oauth);
 
-app.get('/accessTokenRequest', indexRouter.accessTokenRequest);
+app.post('/signUp', indexRouter.signUp);
 
 app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest);
 
@@ -28,9 +29,15 @@ app.get('/show', indexRouter.show);
 
 app.get('/location', indexRouter.location);
 
-app.get('/reviewGet', indexRouter.reviewGet);
-app.post('/reviewPost', indexRouter.reviewPost);
+app.get('/review', indexRouter.review.get);
+app.post('/review', indexRouter.review.post);
 
+const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
+let day = '';
+if(day !== today){
+  day = today;
+  indexRouter.show.updateDB();
+};
 
 //에러 캐치
 app.use(function(err, req, res) {
