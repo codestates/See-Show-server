@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
         const { login, id } = data.data;
         let userinfo = await github.findOne({where: {login}});
         if(!userinfo){
-          await github.create({login: login, name: id});
+          await github.create({login: login, name: id, firstcheck: 1});
           userinfo = await github.findOne({where: {login}});
         };
         const serverToken = jwt.sign(userinfo.dataValues, process.env.ACCESS_SECRET, { expiresIn: "15s" });
@@ -35,7 +35,11 @@ module.exports = async (req, res) => {
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
         });
-        res.status(201).send({data: {accessToken: serverToken, usertype: 'github'}, messege: 'ok'});
+        if(userinfo.dataValues.firstcheck == 1){
+          res.status(201).send({data: {accessToken: serverToken, usertype: 'github', firstcheck: 1}, messege: 'ok'});
+        } else {
+          res.status(201).send({data: {accessToken: serverToken, usertype: 'github'}, messege: 'ok'});
+        }
       })
   }).catch(e => {
     res.status(404)
