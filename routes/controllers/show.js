@@ -57,7 +57,7 @@ module.exports = {
       const list = convertData.response.msgBody.perforList;
       list.forEach((data) => {
         //findOrCreate로 바꾸기
-        await show.create({
+        await show.findOrCreate({where: {seq: data.seq._text}}, { defaults: {
           seq: data.seq._text,
           title : data.title._text,
           startDate: data.startDate._text,
@@ -68,7 +68,7 @@ module.exports = {
           thumbnail: data.thumbnail._text,
           gpsX: data.gpsX._text,
           gpsY: data.gpsY._text
-        })
+        }})
       })
     })
 

@@ -15,7 +15,11 @@ module.exports = (req, res) => {
           res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
           });
-          res.status(201).send({ data: { accessToken: accessToken, usertype: 'nat' }, message: "ok" });
+          if(data.dataValues.firstcheck == 1) {
+            res.status(201).send({ data: { accessToken: accessToken, usertype: 'nat', firstcheck: 1 }, message: "ok" });
+          } else {
+            res.status(201).send({ data: { accessToken: accessToken, usertype: 'nat'}, message: "ok" });
+          }
         }
       })
 }
