@@ -9,7 +9,7 @@ const review = require('../../models/review');
 
 let user_id, github_id = '';
 
- const getId = function(){
+ const getId = async () => {
     //토큰 유효성 검사 => user_id, github_id 받아오기
     const authorization = req.headers["authorization"];
     if (!authorization) {
@@ -27,13 +27,13 @@ let user_id, github_id = '';
       const githubInfo = await github.findOne({
         where : {login : login}
       })
-      github_id = githubInfo.dataValues.id;
+      return {github_id : githubInfo.dataValues.id};
     } else {
       const {userId} = token;
       const userInfo = await User.findOne({
         where : {userId : userId}
       })
-      user_id = userInfo.dataValues.id;
+      return {user_id : userInfo.dataValues.id};
     }
  }
 
@@ -43,7 +43,7 @@ module.exports = {
     const {content, seq, point} = req.body;
 
     //user_id, github_id 할당받기
-    getId();
+    const { github_id, user_id } = getId();
 
     // seq 가지고 show_id 받아오기
     const showInfo = await show.findOne({

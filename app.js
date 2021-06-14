@@ -16,14 +16,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 //라우팅
-app.post('/login', indexRouter.login.nat);
+app.post('/login', indexRouter.login.login);
+app.post('/logout', indexRouter.login.logout);
 app.post('/oauth', indexRouter.oauth);
 
 app.post('/signUp', indexRouter.signUp.nat);
 
 app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest);
 
-app.get('/myPage', indexRouter.myPage);
+app.get('/myPage', indexRouter.myPage.myPage);
+app.post('/myPage', indexRouter.myPage.withdraw);
 
 app.get('/show', indexRouter.show.getList);
 app.get('/show/detail', indexRouter.show.detailInfo);
