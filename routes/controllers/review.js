@@ -131,12 +131,12 @@ module.exports = {
     //user_id 가지고 username 받아오기
  
     const reviewInfo = await reviews.findAll({
+      inclue : { model : User },
       where : {show_id : show_id},
     })
 
-    // const user_name = await reviews.findAll({
-
-    // })
+    const reviewContent = reviewInfo.dataValues.map((el) => el.content);
+    const reviewUsername = reviewInfo.dataValues.map((el) => el.User.username);
 
 
 
@@ -144,8 +144,9 @@ module.exports = {
       return res.status(404).send("not found");
     } else { //입력한 정보가 기존 데이터 베이스에 있을때, 해당 ID만 회신을 줍니다.(200 - 에러 없이 전송)
       return res.status(200).send({data : 
-        { username : user_name,
-          content : reviewInfo.dataValues.content
+        { username : reviewUsername,
+          // content : reviewInfo.dataValues.content
+          constent : reviewContent
         }, message : "OK"});
     }
   }

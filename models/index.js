@@ -40,13 +40,4 @@ db.show = require('../models/show.js')(sequelize, Sequelize);
 db.review = require('../models/review.js')(sequelize, Sequelize);
 db.github = require('../models/gitgub.js')(sequelize, Sequelize);
 
-
-//Relations
-db.review.belongsTo(db.user);
-db.user.hasMany(db.review);
-db.github.belongsTo(db.users);
-db.users.hasMany(db.github);
-db.show.belongsTo(db.review);
-db.review.hasMany(db.show);
-
 module.exports = db;
