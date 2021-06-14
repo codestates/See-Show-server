@@ -5,8 +5,9 @@ const { reviews } = require("../../models");
 const { show } = require("../../models");
 const { User } = require("../../models");
 const { github } = require("../../models");
+const review = require('../../models/review');
 
-let user_id, github_id, user_name = '';
+let user_id, github_id = '';
 
  const getId = function(){
     //토큰 유효성 검사 => user_id, github_id 받아오기
@@ -33,7 +34,6 @@ let user_id, github_id, user_name = '';
         where : {userId : userId}
       })
       user_id = userInfo.dataValues.id;
-      user_name = userInfo.dataValues.username;
     }
  }
 
@@ -126,13 +126,19 @@ module.exports = {
     const showInfo = await show.findOne({
       where : {seq : seq}
     })
-    const show_id = showInfo.id;
+    const show_id = showInfo.dataValues.id;
     
     //user_id 가지고 username 받아오기
-
+ 
     const reviewInfo = await reviews.findAll({
       where : {show_id : show_id},
     })
+
+    // const user_name = await reviews.findAll({
+
+    // })
+
+
 
     if (!reviewInfo) { //입력한 정보가 데이터 베이스에 없을때(404 - notfound)
       return res.status(404).send("not found");

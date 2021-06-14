@@ -29,8 +29,10 @@ app.get('/show', indexRouter.show);
 
 app.get('/location', indexRouter.location);
 
-app.get('/review', indexRouter.review.get);
-app.post('/review', indexRouter.review.post);
+app.get('/review/create', indexRouter.review.getRead);
+app.post('/review/create', indexRouter.review.postCreate);
+app.post('/review', indexRouter.review.postR);
+
 
 const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
 let day = '';
