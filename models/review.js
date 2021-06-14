@@ -11,6 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.user, {
+        foreignkey : 'user_id'
+      });
+      this.belongsTo(models.github, {
+        foreignkey : 'github_id'
+      });
+      this.belongsTo(models.show, {
+        foreignkey : 'show_id'
+      });
       
     }
   };
