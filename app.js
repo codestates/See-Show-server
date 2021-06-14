@@ -19,20 +19,23 @@ app.use(cookieParser());
 app.post('/login', indexRouter.login.nat);
 app.post('/oauth', indexRouter.oauth);
 
-app.post('/signUp', indexRouter.signUp);
+app.post('/signUp', indexRouter.signUp.nat);
 
 app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest);
 
 app.get('/myPage', indexRouter.myPage);
 
-app.get('/show', indexRouter.show);
+app.get('/show', indexRouter.show.getList);
+app.get('/show/detail', indexRouter.show.detailInfo);
+app.post('/show/posting', indexRouter.show.postMyShow);
 
-app.get('/location', indexRouter.location);
+app.get('/recommend/location', indexRouter.recommend.location);
+app.get('/recommend/genre', indexRouter.recommend.genre);
 
-app.get('/review/create', indexRouter.review.getRead);
 app.post('/review/create', indexRouter.review.postCreate);
-app.post('/review', indexRouter.review.postR);
-
+app.post('/review/update', indexRouter.review.postUpdate);
+app.get('/review', indexRouter.review.getRead);
+app.post('/review', indexRouter.review.postDelete);
 
 const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
 let day = '';
