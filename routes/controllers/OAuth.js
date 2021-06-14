@@ -16,14 +16,14 @@ module.exports = async (req, res) => {
       client_secret: process.env.CLIENT_SECRET,
       code: req.body.authorizationCode
     }
-  }).then((response) => {
+  }).then(async (response) => {
     accessToken = response.data.access_token;
     await axios.get('https://api.github.com/user', {
       headers: {
         authorization: `token ${accessToken}`,
       }
     })
-      .then(data => {
+      .then(async data => {
         const { login, id } = data.data;
         let userinfo = await github.findOne({where: {login}});
         if(!userinfo){
