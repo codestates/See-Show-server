@@ -39,7 +39,7 @@ module.exports = {
       .then(() => res.status(201).send('upload complete'));
     }
   },
-  updateDB: () => {
+  updateDB: async () => {
     const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
     const afterSixMonth = (date) => {
       const month = today.slice(4,6);
@@ -47,7 +47,7 @@ module.exports = {
       if(sixMonth > 12) sixMonth = sixMonth - 12;
       return today.replace(month, sixMonth);
     }
-    axios({
+    await axios({
       method: 'get',
       url: `http://www.culture.go.kr/openapi/rest/publicperformancedisplays/period?serviceKey=${process.env.SHOW_API_KEY}&sortStdr=3&from=${today}&to=${afterSixMonth(today)}&cPage=1&rows=100&gpsxfrom=125.590&gpsyfrom=34.344&gpsxto=130.138&gpsyto=38.290`,
       responseType: 'json'
@@ -55,9 +55,9 @@ module.exports = {
     .then(data => {
       const convertData = convert.xml2js(data.data, {compact: true, spaces: 4});
       const list = convertData.response.msgBody.perforList;
-      list.forEach((data) => {
+      list.forEach(async(data) => {
         //findOrCreate로 바꾸기
-        await show.findOrCreate({where: {seq: data.seq._text}}, { defaults: {
+        try{ await show.findOrCreate({where: {seq: data.seq._text}}, { defaults: {
           seq: data.seq._text,
           title : data.title._text,
           startDate: data.startDate._text,
@@ -68,7 +68,8 @@ module.exports = {
           thumbnail: data.thumbnail._text,
           gpsX: data.gpsX._text,
           gpsY: data.gpsY._text
-        }})
+        }})}
+        catch(error){console.log(error)}
       })
     })
   },

@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
-const { User, github } = require('../../models'); // 데이터 베이스 연결 테이블명 User
+const { Users, github } = require('../../models'); // 데이터 베이스 연결 테이블명 User
 require('dotenv').config();
 
 module.exports = { 
   login: (req, res) => {
     const { userId, password } = req.body;
-    User.findOne({where: {userId, password}})
+    Users.findOne({where: {userId, password}})
      .then(data => {
        if(!data){
          res.status(401).send({data: null, message: 'not authorized'})

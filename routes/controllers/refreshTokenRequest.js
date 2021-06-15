@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 const { User, github } = require('../../models');
 
-module.exports = (req, res) => {
+module.exports = async(req, res) => {
   const cookie = req.headers.cookie;
   if(!cookie) res.status(400).send({data: null, message: 'refresh token not provided'});
   const realToken = cookie.split('=')[1];
-  const decode;
+  let decode;
   await jwt.verify(realToken, process.env.REFRESH_SECRET, (err,result) => {
     if(err) res.status(400).send({data: null, message: 'invalid refresh token, please log in again'});
     else decode = result;

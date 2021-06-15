@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const app = express();
+const fs = require('fs');
 
 // 엔진 설정
 app.set('views', path.join(__dirname, 'views'));
@@ -47,25 +48,28 @@ if(day !== today){
 };
 
 //에러 캐치
-app.use(function(err, req, res) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.render('error');
-});
+// app.use(function(err, req, res) {
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
 
-let server;
-if(fs.existsSync("../key.pem") && fs.existsSync("../cert.pem")){
+// const port = process.env.port || 4000;
 
-  const privateKey = fs.readFileSync('..' + "/key.pem", "utf8");
-  const certificate = fs.readFileSync('..' + "/cert.pem", "utf8");
-  const credentials = { key: privateKey, cert: certificate };
+// let server;
+// if(fs.existsSync("../key.pem") && fs.existsSync("../cert.pem")){
 
-  server = https.createServer(credentials, app);
-  server.listen(HTTPS_PORT, () => console.log("server runnning"));
+//   const privateKey = fs.readFileSync('..' + "/key.pem", "utf8");
+//   const certificate = fs.readFileSync('..' + "/cert.pem", "utf8");
+//   const credentials = { key: privateKey, cert: certificate };
 
-} else {
-  server = app.listen(HTTPS_PORT)
-}
+//   server = https.createServer(credentials, app);
+//   server.listen(port, () => console.log("server runnning"));
 
-module.exports = server;
+// } else {
+//   server = app.listen(port)
+// }
+
+// module.exports = server;
+module.exports = app;
