@@ -10,6 +10,7 @@ module.exports = {
          const list = arr.dataValues.slice(0,5);
          res.status(200).send({data: {list: list}, message: 'ok'})
        })
+      //  .catch(error => res.status(404))
     }
     const token = authorization.split(" ")[1];
     try {

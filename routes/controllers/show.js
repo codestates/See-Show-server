@@ -9,7 +9,7 @@ module.exports = {
     await show.findAll({where: {[Op.or]: [
       {title: searchWord},
       {place: searchWord},
-      {realmname: searchWord},
+      {realmName: searchWord},
       {area: searchWord}
     ]}})
     .then(arr => {
@@ -41,7 +41,7 @@ module.exports = {
   },
   updateDB: async () => {
     const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
-    const afterSixMonth = (date) => {
+    const afterSixMonth = (today) => {
       const month = today.slice(4,6);
       const sixMonth = Number(month) + 6;
       if(sixMonth > 12) sixMonth = sixMonth - 12;
@@ -52,25 +52,43 @@ module.exports = {
       url: `http://www.culture.go.kr/openapi/rest/publicperformancedisplays/period?serviceKey=${process.env.SHOW_API_KEY}&sortStdr=3&from=${today}&to=${afterSixMonth(today)}&cPage=1&rows=100&gpsxfrom=125.590&gpsyfrom=34.344&gpsxto=130.138&gpsyto=38.290`,
       responseType: 'json'
     })
-    .then(data => {
-      const convertData = convert.xml2js(data.data, {compact: true, spaces: 4});
+    .then(async(res) => {
+      const convertData = convert.xml2js(res.data, {compact: true, spaces: 4});
       const list = convertData.response.msgBody.perforList;
-      list.forEach(async(data) => {
-        //findOrCreate로 바꾸기
-        try{ await show.findOrCreate({where: {seq: data.seq._text}}, { defaults: {
-          seq: data.seq._text,
-          title : data.title._text,
-          startDate: data.startDate._text,
-          endDate: data.endDate._text,
-          place: data.place._text,
-          realmName: data.realmName._text,
-          area: data.area._text,
-          thumbnail: data.thumbnail._text,
-          gpsX: data.gpsX._text,
-          gpsY: data.gpsY._text
-        }})}
-        catch(error){console.log(error)}
-      })
+      const newList = list.map(data => {return {
+        seq: data.seq._text,
+        title : data.title._text,
+        startDate: data.startDate._text,
+        endDate: data.endDate._text,
+        place: data.place._text,
+        realmName: data.realmName._text,
+        area: data.area._text,
+        thumbnail: data.thumbnail._text,
+        gpsX: data.gpsX._text,
+        gpsY: data.gpsY._text
+      }})
+
+      // await show.bulkCreate(newList, {fields : ['seq', 'title', 'startDate', 'endDate', 'place', 'realmName', 'area', 'thumbnail', 'gpsX', 'gpsY'],
+      //   updateOnDuplicate: ['seq', 'title', 'startDate', 'endDate', 'place', 'realmName', 'area', 'thumbnail', 'gpsX', 'gpsY'],
+      // })
+
+        await Promise.all(newList.map(data => show.findOrCreate(
+          { where: {seq: data.seq}, 
+           defaults: {
+              seq: data.seq,
+              title : data.title,
+              startDate: data.startDate,
+              endDate: data.endDate,
+              place: data.place,
+              realmName: data.realmName,
+              area: data.area,
+              thumbnail: data.thumbnail,
+              gpsX: data.gpsX,
+              gpsY: data.gpsY
+            }
+          }
+        )))
+      
     })
   },
   detailInfo: async (req,res) => {

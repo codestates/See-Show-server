@@ -6,6 +6,8 @@ const indexRouter = require('./routes/index');
 const app = express();
 const fs = require('fs');
 
+var router = express.Router();
+
 // 엔진 설정
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -17,28 +19,33 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 //라우팅
-app.post('/login', indexRouter.login.login);
-app.post('/logout', indexRouter.login.logout);
-app.post('/oauth', indexRouter.oauth);
+router.post('/findpw', indexRouter.findPassword.find); // 비밀번호 메일 보내기
+router.post('/changepw', indexRouter.findPassword.change); // 비밀번호 재생성
+router.post('/firstcheck', indexRouter.firstCheck); // 장르, 장소 설정
 
-app.post('/signUp', indexRouter.signUp.nat);
+router.post('/login', indexRouter.login.login); // 로그인
+router.post('/logout', indexRouter.login.logout); // 로그아웃
 
-app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest);
+router.get('/myPage', indexRouter.myPage.myPage); // 마이페이지
+router.post('/myPage', indexRouter.myPage.withdraw); // 회원 탈퇴
 
-app.get('/myPage', indexRouter.myPage.myPage);
-app.post('/myPage', indexRouter.myPage.withdraw);
+router.post('/oauth', indexRouter.oauth); // 오앗!!!
 
-app.get('/show', indexRouter.show.getList);
-app.get('/show/detail', indexRouter.show.detailInfo);
-app.post('/show/posting', indexRouter.show.postMyShow);
+router.get('/recommend/location', indexRouter.recommend.location); //장소 추천
+router.get('/recommend/genre', indexRouter.recommend.genre); // 장르 추천
 
-app.get('/recommend/location', indexRouter.recommend.location);
-app.get('/recommend/genre', indexRouter.recommend.genre);
+router.get('/refreshTokenRequest', indexRouter.refreshTokenRequest); // 토큰 재발급
 
-app.post('/review/create', indexRouter.review.postCreate);
-app.post('/review/update', indexRouter.review.postUpdate);
-app.get('/review', indexRouter.review.getRead);
-app.post('/review', indexRouter.review.postDelete);
+router.post('/review/create', indexRouter.review.postCreate); // 리뷰 포스팅
+router.post('/review/update', indexRouter.review.postUpdate); // 리뷰 수정
+router.get('/review', indexRouter.review.getRead); // 리뷰 리스트 불러오기
+router.post('/review', indexRouter.review.postDelete); // 리뷰 삭제
+
+router.get('/show', indexRouter.show.getList); // 공연 리스트 불러오기
+router.get('/show/detail', indexRouter.show.detailInfo); // 공연 상세정보
+router.post('/show/posting', indexRouter.show.postMyShow); // 내 공연 등록
+
+router.post('/signUp', indexRouter.signUp.nat); // 자체 회원 가입
 
 const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
 let day = '';
@@ -47,29 +54,4 @@ if(day !== today){
   indexRouter.show.updateDB();
 };
 
-//에러 캐치
-// app.use(function(err, req, res) {
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
-//   res.status(err.status || 500);
-//   res.render('error');
-// });
-
-// const port = process.env.port || 4000;
-
-// let server;
-// if(fs.existsSync("../key.pem") && fs.existsSync("../cert.pem")){
-
-//   const privateKey = fs.readFileSync('..' + "/key.pem", "utf8");
-//   const certificate = fs.readFileSync('..' + "/cert.pem", "utf8");
-//   const credentials = { key: privateKey, cert: certificate };
-
-//   server = https.createServer(credentials, app);
-//   server.listen(port, () => console.log("server runnning"));
-
-// } else {
-//   server = app.listen(port)
-// }
-
-// module.exports = server;
 module.exports = app;
