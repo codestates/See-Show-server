@@ -24,18 +24,18 @@ module.exports = {
         type: Sequelize.STRING
       },
       area: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       firstcheck: {
         type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       }
     });
   },

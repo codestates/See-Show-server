@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.hasMany(models.review, {
         foreignKey: 'user_id',
-        as: 'review'
+        sourceKey : 'id',
       });
     }
   };
@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    timestamps: true ,
   });
   return User;
 };
