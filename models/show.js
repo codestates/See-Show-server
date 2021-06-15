@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     place: DataTypes.STRING,
     realmName: DataTypes.STRING,
     area: DataTypes.STRING,
-    thumnail: DataTypes.STRING,
+    thumbnail: DataTypes.STRING,
     gpsX: DataTypes.STRING,
     gpsY: DataTypes.STRING
   }, {
