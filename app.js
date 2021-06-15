@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const app = express();
+const fs = require('fs');
 
 // 엔진 설정
 app.set('views', path.join(__dirname, 'views'));
@@ -16,42 +17,59 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 //라우팅
-app.post('/login', indexRouter.login);
+app.post('/login', indexRouter.login.login);
+app.post('/logout', indexRouter.login.logout);
+app.post('/oauth', indexRouter.oauth);
 
-app.get('/accessTokenRequest', indexRouter.accessTokenRequest);
+app.post('/signUp', indexRouter.signUp.nat);
 
 app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest);
 
-app.get('/myPage', indexRouter.myPage);
+app.get('/myPage', indexRouter.myPage.myPage);
+app.post('/myPage', indexRouter.myPage.withdraw);
 
-app.get('/show', indexRouter.show);
+app.get('/show', indexRouter.show.getList);
+app.get('/show/detail', indexRouter.show.detailInfo);
+app.post('/show/posting', indexRouter.show.postMyShow);
 
-app.get('/location', indexRouter.location);
+app.get('/recommend/location', indexRouter.recommend.location);
+app.get('/recommend/genre', indexRouter.recommend.genre);
 
-app.get('/reviewGet', indexRouter.reviewGet);
-app.post('/reviewPost', indexRouter.reviewPost);
+app.post('/review/create', indexRouter.review.postCreate);
+app.post('/review/update', indexRouter.review.postUpdate);
+app.get('/review', indexRouter.review.getRead);
+app.post('/review', indexRouter.review.postDelete);
 
+const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
+let day = '';
+if(day !== today){
+  day = today;
+  indexRouter.show.updateDB();
+};
 
 //에러 캐치
-app.use(function(err, req, res) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.render('error');
-});
+// app.use(function(err, req, res) {
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
 
-let server;
-if(fs.existsSync("../key.pem") && fs.existsSync("../cert.pem")){
+// const port = process.env.port || 4000;
 
-  const privateKey = fs.readFileSync('..' + "/key.pem", "utf8");
-  const certificate = fs.readFileSync('..' + "/cert.pem", "utf8");
-  const credentials = { key: privateKey, cert: certificate };
+// let server;
+// if(fs.existsSync("../key.pem") && fs.existsSync("../cert.pem")){
 
-  server = https.createServer(credentials, app);
-  server.listen(HTTPS_PORT, () => console.log("server runnning"));
+//   const privateKey = fs.readFileSync('..' + "/key.pem", "utf8");
+//   const certificate = fs.readFileSync('..' + "/cert.pem", "utf8");
+//   const credentials = { key: privateKey, cert: certificate };
 
-} else {
-  server = app.listen(HTTPS_PORT)
-}
+//   server = https.createServer(credentials, app);
+//   server.listen(port, () => console.log("server runnning"));
 
-module.exports = server;
+// } else {
+//   server = app.listen(port)
+// }
+
+// module.exports = server;
+module.exports = app;

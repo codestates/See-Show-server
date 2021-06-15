@@ -10,11 +10,22 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
+    "emailjs": "^3.4.0",
+    "emailjs-com": "^3.1.0",
     "express": "~4.16.1",
+    "fs": "^0.0.1-security",
     "http-errors": "~1.6.3",
+    "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
     "pug": "^3.0.2",
+    "sequelize": "^6.6.2",
+    "sequelize-cli": "^6.2.0",
     "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
   }
 }

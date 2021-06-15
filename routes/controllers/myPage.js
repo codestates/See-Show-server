@@ -1,8 +1,85 @@
-var express = require('express');
-var router = express.Router();
+const { User, github } = require('../../models');
+const jwt = require('jsonwebtoken');
+const user = require('../../models/user');
+require('dotenv').config();
 
-router.get('/', function(req, res) {
-  res.send('respond with a resource');
-});
+module.exports = {
+  myPage: (req, res) => {
+    const authorization = req.headers["authorization"];
+    if (!authorization) {
+      res.status(404).send({data: null, message: 'invalid access token'})
+    }
+    const token = authorization.split(" ")[1];
+    try {
+      jwt.verify(token, process.env.ACCESS_SECRET);
+    } catch (err) {
+      res.status(404).send({data: null, message: 'invalid access token'})
+    }
+    if(!!userId){
+      const { userId } = token;
+      User.findOne({ where: { userId } })
+        .then((data) => {
+          if (!data) {
+            return res.status(401).send({data: null, message: 'access token has been tempered'});
+          }
+          delete data.dataValues.password;
+          return res.status(201).send({ data: { userInfo: data.dataValues }, message: 'ok' });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      const { login } = token;
+      github.findOne({ where: { login } })
+        .then((data) => {
+          if (!data) {
+            return res.status(401).send({data: null, message: 'access token has been tempered'});
+          }
+          return res.status(201).send({ data: { userInfo: data.dataValues }, message: 'ok' });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  },
+  withdraw: (req, res) => {
+    const authorization = req.headers["authorization"];
+    if (!authorization) {
+      res.status(404).send({data: null, message: 'invalid access token'})
+    }
+    const token = authorization.split(" ")[1];
+    try {
+      jwt.verify(token, process.env.ACCESS_SECRET);
+    } catch (err) {
+      res.status(404).send({data: null, message: 'invalid access token'})
+    }
+    if(!!userId){
+      const { userId } = token;
+      User.destroy({ where: { userId } })
+        .then((data) => {
+          if (!data) {
+            return res.status(401).send('there is not user information');
+          }
+          return res.status(201).send('withdraw success');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      const { login } = token;
+      github.findOne({ where: { login } })
+        .then((data) => {
+          if (!data) {
+            return res.status(401).send('there is not user information');
+          }
+          return res.status(201).send('withdraw success');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
 
-module.exports = router;
+  }
+
+}
+
