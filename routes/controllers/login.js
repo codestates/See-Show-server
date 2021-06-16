@@ -18,7 +18,6 @@ module.exports = {
            httpOnly: true,
          });
          if(data.dataValues.firstcheck == 1) {
-          console.log("******* : ", accessToken, refreshToken);
            res.status(201).send({ data: { accessToken: accessToken, usertype: 'nat', firstcheck: 1 }, message: "ok" });
          } else {
            res.status(201).send({ data: { accessToken: accessToken, usertype: 'nat'}, message: "ok" });
