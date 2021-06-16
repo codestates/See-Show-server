@@ -1,12 +1,12 @@
 // const emailjs = require('emailjs-com'); //emailjs-com
-const { Users } = require('../../models');
+const { User } = require('../../models');
 // emailjs.init(process.env.EMAIL_ID);
 // console.log("******** : ", emailjs)
 
 module.exports = {
   find: async (req, res) => {
     const { userId, email } = req.body;
-    await Users.findOne({where: {userId : userId, email: email}})
+    await User.findOne({where: {userId : userId, email: email}})
      .then(async(data)=> {
       await emailjs.sendForm(process.env.EMAIL_SERVICE_ID, process.env.EMAIL_TEMPLETE_ID, {
         to_name: data.dataValues.username,
