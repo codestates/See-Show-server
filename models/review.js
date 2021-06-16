@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     show_id: DataTypes.INTEGER,
     user_id: DataTypes.INTEGER,
     github_id: DataTypes.INTEGER,
-    point: DataTypes.INTEGER,
+    point: DataTypes.STRING,
     content: DataTypes.STRING
   }, {
     sequelize,

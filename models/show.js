@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   show.init({
-    seq: DataTypes.INTEGER,
+    seq: DataTypes.STRING,
     title: DataTypes.STRING,
     startDate: DataTypes.STRING,
     endDate: DataTypes.STRING,

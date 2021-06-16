@@ -35,9 +35,9 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 //Models(tables)
-db.User = require('../models/user.js')(sequelize, Sequelize);
-db.show = require('../models/show.js')(sequelize, Sequelize);
-db.review = require('../models/review.js')(sequelize, Sequelize);
-db.github = require('../models/github.js')(sequelize, Sequelize);
+db.User = require('./user.js')(sequelize, Sequelize);
+db.show = require('./show.js')(sequelize, Sequelize);
+db.review = require('./review.js')(sequelize, Sequelize);
+db.github = require('./github.js')(sequelize, Sequelize);
 
 module.exports = db;
