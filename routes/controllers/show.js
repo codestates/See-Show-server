@@ -1,6 +1,7 @@
 const axios = require('axios');
 const convert = require('xml-js');
 const { show } = require('../../models');
+const {Op} = require('sequelize');
 require('dotenv').config();
 
 module.exports = {
@@ -13,7 +14,8 @@ module.exports = {
       {area: searchWord}
     ]}})
     .then(arr => {
-      res.status(200).send({showList: arr});
+      const list = arr.map(el => el.dataValues);
+      res.status(200).send({showList: list});
     })
     .catch((err) => {
       res.status(404).send('not found');
