@@ -46,14 +46,14 @@ module.exports = {
     if (!authorization) {
       res.status(404).send({data: null, message: 'invalid access token'})
     }
-    const token = authorization.split(" ")[1];
+    let token = authorization.split(" ")[1];
     try {
-      jwt.verify(token, process.env.ACCESS_SECRET);
+     token = jwt.verify(token, process.env.ACCESS_SECRET);
     } catch (err) {
       res.status(404).send({data: null, message: 'invalid access token'})
     }
+    const { userId } = token;
     if(!!userId){
-      const { userId } = token;
       User.destroy({ where: { userId } })
         .then((data) => {
           if (!data) {
@@ -81,4 +81,3 @@ module.exports = {
   }
 
 }
-
