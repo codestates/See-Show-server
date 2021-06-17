@@ -5,7 +5,6 @@ const getId = async (req, res) => {
    let obj = {};
     //토큰 유효성 검사 => user_id, github_id 받아오기
     const authorization = req.headers["authorization"];
-    // console.log(authorization, 'author') // 확인 완료
     if (!authorization) {
       return 2;
     }else{
