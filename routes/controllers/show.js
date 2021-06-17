@@ -2,6 +2,7 @@ const axios = require('axios');
 const convert = require('xml-js');
 const { show } = require('../../models');
 const {Op} = require('sequelize');
+const {decode} = require( 'html-entities');
 require('dotenv').config();
 
 module.exports = {
@@ -59,7 +60,7 @@ module.exports = {
       const list = convertData.response.msgBody.perforList;
       const newList = list.map(data => {return {
         seq: data.seq._text,
-        title : data.title._text,
+        title : decode(data.title._text),
         startDate: data.startDate._text,
         endDate: data.endDate._text,
         place: data.place._text,

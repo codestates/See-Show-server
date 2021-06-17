@@ -61,12 +61,12 @@ app.post('/show/posting', indexRouter.show.postMyShow); // 내 공연 등록
 
 app.post('/signUp', indexRouter.signUp.nat); // 자체 회원 가입
 
-// const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
-// let day = '';
-// if(day !== today){
-//   day = today;
-//   indexRouter.show.updateDB();
-// };
+const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
+let day = '';
+if(day !== today){
+  day = today;
+  indexRouter.show.updateDB();
+};
 
 const HTTPS_PORT = process.env.HTTPS_PORT || 8080;
 
