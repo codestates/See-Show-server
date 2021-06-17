@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["https://localhost:3001"],
+    origin: ["https://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
   })
@@ -55,7 +55,7 @@ app.post('/review/update', indexRouter.review.postUpdate); // 리뷰 수정
 app.get('/review', indexRouter.review.getRead); // 리뷰 리스트 불러오기
 app.post('/review', indexRouter.review.postDelete); // 리뷰 삭제
 
-app.get('/show', indexRouter.show.getList); // 공연 리스트 불러오기
+app.post('/show', indexRouter.show.getList); // 공연 리스트 불러오기
 app.post('/show/detail', indexRouter.show.detailInfo); // 공연 상세정보
 app.post('/show/posting', indexRouter.show.postMyShow); // 내 공연 등록
 
