@@ -18,14 +18,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   show.init({
-    seq: DataTypes.INTEGER,
+    seq: DataTypes.STRING,
     title: DataTypes.STRING,
     startDate: DataTypes.STRING,
     endDate: DataTypes.STRING,
     place: DataTypes.STRING,
     realmName: DataTypes.STRING,
     area: DataTypes.STRING,
-    thumnail: DataTypes.STRING,
+    thumbnail: DataTypes.STRING,
     gpsX: DataTypes.STRING,
     gpsY: DataTypes.STRING
   }, {

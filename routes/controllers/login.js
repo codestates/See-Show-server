@@ -4,6 +4,7 @@ require('dotenv').config();
 
 module.exports = { 
   login: (req, res) => {
+    // console.log("******* : 확인 ");
     const { userId, password } = req.body;
     User.findOne({where: {userId, password}})
      .then(data => {

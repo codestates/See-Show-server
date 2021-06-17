@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
           await github.create({login: login, name: id, firstcheck: 1});
           userinfo = await github.findOne({where: {login}});
         };
-        const serverToken = jwt.sign(userinfo.dataValues, process.env.ACCESS_SECRET, { expiresIn: "15s" });
+        const serverToken = jwt.sign(userinfo.dataValues, process.env.ACCESS_SECRET, { expiresIn: "15d" });
         const refreshToken = jwt.sign(userinfo.dataValues, process.env.REFRESH_SECRET, { expiresIn: "30d" });
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,

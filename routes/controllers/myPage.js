@@ -1,6 +1,5 @@
 const { User, github } = require('../../models');
 const jwt = require('jsonwebtoken');
-const user = require('../../models/user');
 require('dotenv').config();
 
 module.exports = {
@@ -9,37 +8,37 @@ module.exports = {
     if (!authorization) {
       res.status(404).send({data: null, message: 'invalid access token'})
     }
-    const token = authorization.split(" ")[1];
+    let token = authorization.split(" ")[1];
     try {
-      jwt.verify(token, process.env.ACCESS_SECRET);
+      token = jwt.verify(token, process.env.ACCESS_SECRET);
+      const { userId } = token;
+      if(!!userId){
+        User.findOne({ where: { userId } })
+          .then((data) => {
+            if (!data) {
+              return res.status(401).send({data: null, message: 'access token has been tempered'});
+            }
+            delete data.dataValues.password;
+            return res.status(201).send({ data: { userInfo: data.dataValues }, message: 'ok' });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        const { login } = token;
+        github.findOne({ where: { login } })
+          .then((data) => {
+            if (!data) {
+              return res.status(401).send({data: null, message: 'access token has been tempered'});
+            }
+            return res.status(201).send({ data: { userInfo: data.dataValues }, message: 'ok' });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     } catch (err) {
       res.status(404).send({data: null, message: 'invalid access token'})
-    }
-    if(!!userId){
-      const { userId } = token;
-      User.findOne({ where: { userId } })
-        .then((data) => {
-          if (!data) {
-            return res.status(401).send({data: null, message: 'access token has been tempered'});
-          }
-          delete data.dataValues.password;
-          return res.status(201).send({ data: { userInfo: data.dataValues }, message: 'ok' });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      const { login } = token;
-      github.findOne({ where: { login } })
-        .then((data) => {
-          if (!data) {
-            return res.status(401).send({data: null, message: 'access token has been tempered'});
-          }
-          return res.status(201).send({ data: { userInfo: data.dataValues }, message: 'ok' });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     }
   },
   withdraw: (req, res) => {
@@ -47,14 +46,14 @@ module.exports = {
     if (!authorization) {
       res.status(404).send({data: null, message: 'invalid access token'})
     }
-    const token = authorization.split(" ")[1];
+    let token = authorization.split(" ")[1];
     try {
-      jwt.verify(token, process.env.ACCESS_SECRET);
+     token = jwt.verify(token, process.env.ACCESS_SECRET);
     } catch (err) {
       res.status(404).send({data: null, message: 'invalid access token'})
     }
+    const { userId } = token;
     if(!!userId){
-      const { userId } = token;
       User.destroy({ where: { userId } })
         .then((data) => {
           if (!data) {
