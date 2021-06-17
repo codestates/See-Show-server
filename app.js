@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["https://localhost:3000"],
+    origin: ["https://seeshow.live"],
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
   })

@@ -5,7 +5,6 @@ module.exports = async(req) => {
   const cookie = req.headers.cookie;
   if(!cookie) return 2;
   const realToken = cookie.split('refreshToken=')[1];
-  console.log(realToken,'reaaaaaaaa')
   let decode = await jwt.verify(realToken, process.env.REFRESH_SECRET)
   if(decode.userId){
     const user = await User.findOne({where: {userId: decode.userId, email: decode.email}});
