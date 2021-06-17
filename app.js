@@ -16,21 +16,41 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 //라우팅
-app.post('/login', indexRouter.login);
+app.post('/findpw', indexRouter.findPassword.find); // 비밀번호 메일 보내기
+app.post('/changepw', indexRouter.findPassword.change); // 비밀번호 재생성
+app.post('/firstcheck', indexRouter.firstCheck); // 장르, 장소 설정
 
-app.get('/accessTokenRequest', indexRouter.accessTokenRequest);
+app.post('/login', indexRouter.login.login); // 로그인
+app.post('/logout', indexRouter.login.logout); // 로그아웃
 
-app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest);
+app.get('/myPage', indexRouter.myPage.myPage); // 마이페이지
+app.post('/myPage', indexRouter.myPage.withdraw); // 회원 탈퇴
 
-app.get('/myPage', indexRouter.myPage);
+app.post('/oauth', indexRouter.oauth); // 오앗
 
-app.get('/show', indexRouter.show);
+app.get('/recommend/location', indexRouter.recommend.location); //장소 추천
+app.get('/recommend/genre', indexRouter.recommend.genre); // 장르 추천
 
-app.get('/location', indexRouter.location);
+app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest); // 토큰 재발급
 
-app.get('/reviewGet', indexRouter.reviewGet);
-app.post('/reviewPost', indexRouter.reviewPost);
+app.post('/review/create', indexRouter.review.postCreate); // 리뷰 포스팅
+app.post('/review/update', indexRouter.review.postUpdate); // 리뷰 수정
+app.get('/review', indexRouter.review.getRead); // 리뷰 리스트 불러오기
+app.post('/review', indexRouter.review.postDelete); // 리뷰 삭제
 
+app.get('/show', indexRouter.show.getList); // 공연 리스트 불러오기
+app.get('/show/detail', indexRouter.show.detailInfo); // 공연 상세정보
+app.post('/show/posting', indexRouter.show.postMyShow); // 내 공연 등록
+
+app.post('/signUp', indexRouter.signUp.nat); // 자체 회원 가입
+
+
+const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
+let day = '';
+if(day !== today){
+  day = today;
+  indexRouter.show.updateDB();
+};
 
 //에러 캐치
 app.use(function(err, req, res) {
