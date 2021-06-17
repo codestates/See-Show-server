@@ -1,41 +1,26 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('shows', {
+    await queryInterface.createTable('reviews', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      seq: {
+      show_id: {
         type: Sequelize.INTEGER
       },
-      title: {
+      user_id: {
+        type: Sequelize.INTEGER
+      },
+      github_id: {
+        type: Sequelize.INTEGER
+      },
+      point: {
         type: Sequelize.STRING
       },
-      startDate: {
-        type: Sequelize.STRING
-      },
-      endDate: {
-        type: Sequelize.STRING
-      },
-      place: {
-        type: Sequelize.STRING
-      },
-      realmName: {
-        type: Sequelize.STRING
-      },
-      area: {
-        type: Sequelize.STRING
-      },
-      thumbnail: {
-        type: Sequelize.STRING
-      },
-      gpsX: {
-        type: Sequelize.STRING
-      },
-      gpsY: {
+      content: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -49,6 +34,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('shows');
+    await queryInterface.dropTable('reviews');
   }
 };
