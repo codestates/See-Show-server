@@ -11,11 +11,14 @@ module.exports = async (req, res) => {
     res.status(404).send({data: null, message: 'invalid access token'})
   }
   let token = authorization.split(" ")[1];
+  let toggle = 0;
   try {
-    token = await jwt.verify(token, process.env.ACCESS_SECRET);
+    let verifytoken = await jwt.verify(token, process.env.ACCESS_SECRET);
   } catch (err) {
     token = await refreshTokenRequest(req)
+    toggle = 1;
   }
+  
   if(token.userId){
     await User.update({genre: genre, area: area, firstcheck: 0},{where: {userId: token.userId}})
     .then(()=> {
