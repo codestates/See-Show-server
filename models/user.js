@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.review, {
-        foreignKey: 'user_id',
+        foreignKey: 'userId',
         sourceKey : 'id',
       });
     }
