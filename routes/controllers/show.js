@@ -46,7 +46,7 @@ module.exports = {
     const afterSixMonth = (today) => {
       const month = today.slice(4,6);
       const sixMonth = Number(month) + 6;
-      if(sixMonth > 12) sixMonth = sixMonth - 12;
+      // if(sixMonth > 12) sixMonth = sixMonth - 12;
       return today.replace(month, sixMonth);
     }
     await axios({
