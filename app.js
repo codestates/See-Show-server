@@ -7,17 +7,50 @@ const indexRouter = require('./routes/index');
 const app = express();
 const fs = require('fs');
 const https = require('https');
+const multer = require('multer')
 
 require("dotenv").config();
 
 var router = express.Router();
 
+//multer 설정
+try {
+  fs.readdirSync('uploads');
+} catch(error) {
+  console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+  fs.mkdirSync('uploads');
+}
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {    
+    const ext = path.extname(file.originalname);
+    cb(null, path.basename(file.originalname, ext)+ Date.now() + ext);
+  },
+})
+const imageFilter = (req, file, cb) => {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        return cb(new Error("Only image files are allowed!"));
+      }
+      cb(null, true);
+    };
+const upload = multer({storage : storage, limits : { filesize : 5 * 1024 * 1024 }, fileFilter: imageFilter })
 
+app.use('/image',express.static('./uploads'));
+
+const models = require('./models');
+models.sequelize.sync()
+.then(()=> {
+  console.log('Connet Database')
+})
+.catch((err) =>{
+  console.log(err)
+})
 
 // 엔진 설정
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
 
 // 서버 설정
 app.use(logger('dev'));

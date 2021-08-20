@@ -22,6 +22,8 @@ module.exports = {
     })
   },
   postMyShow: async (req, res) => {
+
+    //multer 적용할것.
     const { title, startDate, endDate, place, realmName, area, thumbnail, gpsX, gpsY } = req.body;
     if(!title || !startDate || !endDate || !place || !realmName || !area || !thumbnail || !gpsX || !gpsY){
       res.status(422).send("insufficient parameters supplied");
