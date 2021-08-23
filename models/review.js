@@ -12,24 +12,24 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.User, {
-        foreignkey : 'user_id',
+        foreignkey : 'userId',
         targetKey : 'id',
       });
       this.belongsTo(models.github, {
-        foreignkey : 'github_id',
+        foreignkey : 'githubId',
         targetKey : 'id',
       });
       this.belongsTo(models.show, {
-        foreignkey : 'show_id',
+        foreignkey : 'showId',
         targetKey : 'id',
       });
       
     }
   };
   review.init({
-    show_id: DataTypes.INTEGER,
-    user_id: DataTypes.INTEGER,
-    github_id: DataTypes.INTEGER,
+    showId: DataTypes.INTEGER,
+    userId: DataTypes.INTEGER,
+    githubId: DataTypes.INTEGER,
     point: DataTypes.STRING,
     content: DataTypes.STRING
   }, {

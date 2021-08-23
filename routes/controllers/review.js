@@ -3,7 +3,7 @@ const { review, show, User, github } = require("../../models");
 
 const getId = async (req, res) => {
    let obj = {};
-    //토큰 유효성 검사 => user_id, github_id 받아오기
+    //토큰 유효성 검사 => userId, githubId 받아오기
     const authorization = req.headers["authorization"];
     // console.log(authorization, 'author') // 확인 완료
     if (!authorization) {
@@ -41,16 +41,16 @@ const getId = async (req, res) => {
      const githubInfo = await github.findOne({
        where : {login : login}
      })
-    //  obj.github_id = githubInfo.dataValues.id
-    //  obj.user_id = null
+    //  obj.githubId = githubInfo.dataValues.id
+    //  obj.userId = null
     //  return obj
-     return {github_id : githubInfo.dataValues.id, user_id : null};
+     return {githubId : githubInfo.dataValues.id, userId : null};
     } else {
        const {userId} = token;
        const userInfo = await User.findOne({
          where : {userId : userId}
        })
-       return {user_id : userInfo.dataValues.id, github_id : null};
+       return {userId : userInfo.dataValues.id, githubId : null};
     }
   }
     
@@ -63,14 +63,14 @@ module.exports = {
     if(await getId(req,res) === 2){
       res.status(404).send({data: null, message: 'invalid access token'})
     }
-    //user_id, github_id 할당받기
-    const {github_id, user_id} = await getId(req, res);
+    //userId, githubId 할당받기
+    const {githubId, userId} = await getId(req, res);
     
-    // seq 가지고 show_id 받아오기
+    // seq 가지고 showId 받아오기
     const showInfo = await show.findOne({
       where : {seq : seq}
     })
-    const show_id = showInfo.dataValues.id;
+    const showId = showInfo.dataValues.id;
 
     //리뷰 관련 정보 입력 필수. 정보가 부족할때 422 error 회신
     if(!content || !point){
@@ -78,9 +78,9 @@ module.exports = {
     } else {
       // 데이터 베이스에 생성
       await review.create({
-        show_id : show_id,
-        user_id : user_id,
-        github_id : github_id,
+        showId : showId,
+        userId : userId,
+        githubId : githubId,
         point :  point,
         content :  content })
       return res.status(200).send("OK")
@@ -91,14 +91,14 @@ module.exports = {
     if(await getId(req,res) === 2){
       res.status(404).send({data: null, message: 'invalid access token'})
     }
-    //user_id, github_id 할당받기
-    const {github_id, user_id} = await getId(req, res);
+    //userId, githubId 할당받기
+    const {githubId, userId} = await getId(req, res);
 
-    // seq 가지고 show_id 받아오기
+    // seq 가지고 showId 받아오기
     const showInfo = await show.findOne({
       where : {seq : seq}
     })
-    const show_id = showInfo.id;    
+    const showId = showInfo.id;    
 
     if(!content){
       return res.status(404).send("not found")
@@ -108,9 +108,9 @@ module.exports = {
         content : content
       },{
         where:{ 
-          show_id : show_id,
-          user_id : user_id,
-          github_id : github_id,
+          showId : showId,
+          userId : userId,
+          githubId : githubId,
            },
       })
       return res.status(200).send("OK")
@@ -121,22 +121,22 @@ module.exports = {
     if(await getId(req,res) === 2){
       res.status(404).send({data: null, message: 'invalid access token'})
     }
-    //user_id, github_id 할당받기
-    const {github_id, user_id} = await getId(req, res);
+    //userId, githubId 할당받기
+    const {githubId, userId} = await getId(req, res);
 
-    // seq 가지고 show_id 받아오기
+    // seq 가지고 showId 받아오기
     const showInfo = await show.findOne({
       where : {seq : seq}
     })
-    const show_id = showInfo.id;      
+    const showId = showInfo.id;      
 
-    if(!show_id){
+    if(!showId){
       return res.status(404).send("not found");
     } else {
       await review.destroy({where : {
-        show_id : show_id,
-        user_id : user_id,
-        github_id : github_id,
+        showId : showId,
+        userId : userId,
+        githubId : githubId,
       }});
       return res.status(200).send("OK");
     }
@@ -144,17 +144,17 @@ module.exports = {
   getRead: async(req, res) => {
     const {seq} = req.body;
 
-    // seq 가지고 show_id 받아오기
+    // seq 가지고 showId 받아오기
     const showInfo = await show.findOne({
       where : {seq : seq}
     })
-    const show_id = showInfo.dataValues.id;
+    const showId = showInfo.dataValues.id;
     
-    //user_id 가지고 username 받아오기
+    //userId 가지고 username 받아오기
  
     const reviewInfo = await review.findAll({
       include : [{ model : User, as : userinfo },{ model : github, as : githubinfo }],
-      where : {show_id : show_id},
+      where : {showId : showId},
     })
 
     const reviewData = reviewInfo.map((el) => {
