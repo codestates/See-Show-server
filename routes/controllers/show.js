@@ -24,8 +24,15 @@ module.exports = {
   postMyShow: async (req, res) => {
 
     //multer 적용할것.
-    const { title, startDate, endDate, place, realmName, area, thumbnail, gpsX, gpsY } = req.body;
-    if(!title || !startDate || !endDate || !place || !realmName || !area || !thumbnail || !gpsX || !gpsY){
+    let thumbnail = ''
+    if(req.file){
+      //thumbnail 받아오기
+      thumbnail = 'https://' +  process.env.WEBSITE + '/image/' + req.file.filename;
+    }
+
+
+    const { title, startDate, endDate, place, realmName, area, gpsX, gpsY } = req.body;
+    if(!title || !startDate || !endDate || !place || !realmName || !area || !gpsX || !gpsY){
       res.status(422).send("insufficient parameters supplied");
     } else {
       await show.create({
