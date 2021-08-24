@@ -1,16 +1,21 @@
 const { User, github } = require('../../models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const checkToken = require('./utilFunction')
 
 module.exports = {
   myPage: (req, res) => {
-    const authorization = req.headers["authorization"];
-    if (!authorization) {
-      res.status(404).send({data: null, message: 'invalid access token'})
-    }
-    let token = authorization.split(" ")[1];
-    try {
-      token = jwt.verify(token, process.env.ACCESS_SECRET);
+      const data = checkToken(req)
+
+    // const authorization = req.headers["authorization"];
+    // if (!authorization) {
+    //   res.status(404).send({data: null, message: 'invalid access token'})
+    // }
+    // let token = authorization.split(" ")[1];
+    // try {
+    //   token = jwt.verify(token, process.env.ACCESS_SECRET);
+
+
       const { nickname } = token;
       if(!!nickname){
         User.findOne({ where: { nickname } })
@@ -37,9 +42,6 @@ module.exports = {
             console.log(err);
           });
       }
-    } catch (err) {
-      res.status(404).send({data: null, message: 'invalid access token'})
-    }
   },
   withdraw: (req, res) => {
     const authorization = req.headers["authorization"];

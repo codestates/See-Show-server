@@ -1,19 +1,19 @@
 const jwt = require('jsonwebtoken');
 const { User, github } = require('../../models'); // 데이터 베이스 연결 테이블명 User
 require('dotenv').config();
+// const { getAccessToken, getRefreshToken} = require('./utilFunction')
+
 
 module.exports = { 
   login: (req, res) => {
-    const { nickname, password } = req.body;
-    console.log("******* : 확인 ", nickname);
-
-    User.findOne({where: {nickname, password}})
+    const { userId, password } = req.body;
+    User.findOne({where: {userId, password}})
      .then(data => {
        if(!data){
          res.status(401).send({data: null, message: 'not authorized'})
        } else {
          delete data.dataValues.password;
-         const accessToken = jwt.sign(data.dataValues, process.env.ACCESS_SECRET, { expiresIn: "15m" });
+         const accessToken = jwt.sign(data.dataValues, process.env.ACCESS_SECRET, { expiresIn: "15s" });
          const refreshToken = jwt.sign(data.dataValues, process.env.REFRESH_SECRET, { expiresIn: "30d" });
          res.cookie("refreshToken", refreshToken, {
            httpOnly: true,

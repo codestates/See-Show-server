@@ -1,9 +1,9 @@
-const axios = require("axios");
-const convert = require("xml-js");
-const { show } = require("../../models");
-const { Op } = require("sequelize");
+const axios = require('axios');
+const convert = require('xml-js');
+const { show } = require('../../models');
+const {Op} = require('sequelize');
 const {decode} = require( 'html-entities');
-require("dotenv").config();
+require('dotenv').config();
 
 module.exports = {
   getList: async (req, res) => {
@@ -87,9 +87,9 @@ module.exports = {
       .replace(/:/g, "")
       .substring(0, 8);
     const afterSixMonth = (today) => {
-      const month = today.slice(4, 6);
-      const sixMonth = Number(month) + 6;
-      // if(sixMonth > 12) sixMonth = sixMonth - 12;
+      const month = today.slice(4,6);
+      let sixMonth = Number(month) + 6;
+      if(sixMonth > 12) sixMonth = sixMonth - 12;
       return today.replace(month, sixMonth);
     };
     await axios({
