@@ -4,15 +4,16 @@ require('dotenv').config();
 
 module.exports = { 
   login: (req, res) => {
-    console.log("******* : 확인 ");
-    const { userId, password } = req.body;
-    User.findOne({where: {userId, password}})
+    const { nickname, password } = req.body;
+    console.log("******* : 확인 ", nickname);
+
+    User.findOne({where: {nickname, password}})
      .then(data => {
        if(!data){
          res.status(401).send({data: null, message: 'not authorized'})
        } else {
          delete data.dataValues.password;
-         const accessToken = jwt.sign(data.dataValues, process.env.ACCESS_SECRET, { expiresIn: "15s" });
+         const accessToken = jwt.sign(data.dataValues, process.env.ACCESS_SECRET, { expiresIn: "15m" });
          const refreshToken = jwt.sign(data.dataValues, process.env.REFRESH_SECRET, { expiresIn: "30d" });
          res.cookie("refreshToken", refreshToken, {
            httpOnly: true,

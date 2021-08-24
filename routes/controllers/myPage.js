@@ -11,9 +11,9 @@ module.exports = {
     let token = authorization.split(" ")[1];
     try {
       token = jwt.verify(token, process.env.ACCESS_SECRET);
-      const { userId } = token;
-      if(!!userId){
-        User.findOne({ where: { userId } })
+      const { nickname } = token;
+      if(!!nickname){
+        User.findOne({ where: { nickname } })
           .then((data) => {
             if (!data) {
               return res.status(401).send({data: null, message: 'access token has been tempered'});
@@ -52,9 +52,9 @@ module.exports = {
     } catch (err) {
       res.status(404).send({data: null, message: 'invalid access token'})
     }
-    const { userId } = token;
-    if(!!userId){
-      User.destroy({ where: { userId } })
+    const { nickname } = token;
+    if(!!nickname){
+      User.destroy({ where: { nickname } })
         .then((data) => {
           if (!data) {
             return res.status(401).send('there is not user information');

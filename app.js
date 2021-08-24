@@ -128,7 +128,7 @@ if(day !== today){
   indexRouter.show.updateDB();
 };
 
-const HTTPS_PORT = process.env.HTTPS_PORT || 8080;
+const HTTPS_PORT = process.env.HTTPS_PORT || 4000;
 
 let server;
 if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
