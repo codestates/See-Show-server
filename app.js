@@ -7,17 +7,77 @@ const indexRouter = require('./routes/index');
 const app = express();
 const fs = require('fs');
 const https = require('https');
+const multer = require('multer')
+const multerS3 = require('multer-s3')
+const aws = require("aws-sdk")
 
 require("dotenv").config();
 
 var router = express.Router();
 
+//multer S3 설정
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACC_KEY,
+  secretAccessKey: process.env.AWS_SCR_KEY,
+})
 
+var uploadS3 = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'multer-s',
+    acl: 'public-read',
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      // cb(null, shortid.generate() + "-" + file.originalname)
+      cb(null, path.basename(file.originalname, ext)+ Date.now() + ext)
+      // cb(null, Date.now().toString())
+    }
+  })
+})
+
+// const uploadS3 = multer({})
+
+
+//multer 설정
+// try {
+//   fs.readdirSync('uploads');
+// } catch(error) {
+//   console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+//   fs.mkdirSync('uploads');
+// }
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'uploads/')
+//   },
+//   filename: function (req, file, cb) {    
+//     const ext = path.extname(file.originalname);
+//     cb(null, path.basename(file.originalname, ext)+ Date.now() + ext);
+//   },
+// })
+// const imageFilter = (req, file, cb) => {
+//       if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+//         return cb(new Error("Only image files are allowed!"));
+//       }
+//       cb(null, true);
+//     };
+// const upload = multer({storage : storage, limits : { filesize : 5 * 1024 * 1024 }, fileFilter: imageFilter })
+
+app.use('/image',express.static('./uploads'));
+
+const models = require('./models');
+models.sequelize.sync()
+.then(()=> {
+  console.log('Connet Database')
+})
+.catch((err) =>{
+  console.log(err)
+})
 
 // 엔진 설정
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
 
 // 서버 설정
 app.use(logger('dev'));
@@ -26,7 +86,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["https://localhost:3000"],
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
   })
@@ -57,7 +117,7 @@ app.post('/review', indexRouter.review.postDelete); // 리뷰 삭제
 
 app.post('/show', indexRouter.show.getList); // 공연 리스트 불러오기
 app.post('/show/detail', indexRouter.show.detailInfo); // 공연 상세정보
-app.post('/show/posting', indexRouter.show.postMyShow); // 내 공연 등록
+app.post('/show/posting', uploadS3.single('thumbnail'),indexRouter.show.postMyShow); // 내 공연 등록
 
 app.post('/signUp', indexRouter.signUp.nat); // 자체 회원 가입
 
@@ -70,9 +130,6 @@ if(day !== today){
 
 const HTTPS_PORT = process.env.HTTPS_PORT || 4000;
 
-// 인증서 파일들이 존재하는 경우에만 https 프로토콜을 사용하는 서버를 실행합니다. 
-// 만약 인증서 파일이 존재하지 않는경우, http 프로토콜을 사용하는 서버를 실행합니다.
-// 파일 존재여부를 확인하는 폴더는 서버 폴더의 package.json이 위치한 곳입니다.
 let server;
 if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
 

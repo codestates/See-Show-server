@@ -14,9 +14,12 @@ module.exports = async(req) => {
     let data = {...user.dataValues};
     delete data.password;
     return await jwt.sign(data, process.env.ACCESS_SECRET, {expiresIn: '30s'});
-  } else if(decode.login){
+  } else if(decode.login){//깃헙로그인
     const ghUser = await github.findOne({where: {userId: decode.login}});
     let data = ghUser.dataValues;
     return await jwt.sign(data, process.env.ACCESS_SECRET, {expiresIn: '30s'});
   }
+    else{
+      return undefined
+    }
 }
