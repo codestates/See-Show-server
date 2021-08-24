@@ -43,7 +43,7 @@ module.exports = {
 //       }
 
 //   }
-  getUserInfo: asnyc(token)=>{
+  getUserInfo: async(token)=>{
       const userInfo= jwt.verify(token,process.env.ACCESS_SECRET)
       return userInfo
   }
