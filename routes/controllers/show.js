@@ -46,7 +46,7 @@ module.exports = {
     const today = new Date().toISOString().replace(/-/g, '').replace('T','').replace(/:/g,'').substring(0,8);
     const afterSixMonth = (today) => {
       const month = today.slice(4,6);
-      const sixMonth = Number(month) + 6;
+      let sixMonth = Number(month) + 6;
       if(sixMonth > 12) sixMonth = sixMonth - 12;
       return today.replace(month, sixMonth);
     }
