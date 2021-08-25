@@ -81,7 +81,7 @@ app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest); // 토큰 재�
 
 app.post('/review/create', indexRouter.review.postCreate); // 리뷰 포스팅
 app.post('/review/update', indexRouter.review.postUpdate); // 리뷰 수정
-app.get('/review', indexRouter.review.getRead); // 리뷰 리스트 불러오기
+app.post('/review/read', indexRouter.review.postRead); // 리뷰 리스트 불러오기
 app.post('/review', indexRouter.review.postDelete); // 리뷰 삭제
 
 app.post('/show', indexRouter.show.getList); // 공연 리스트 불러오기
