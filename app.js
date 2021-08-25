@@ -30,46 +30,10 @@ var uploadS3 = multer({
       cb(null, {fieldName: file.fieldname});
     },
     key: function (req, file, cb) {
-      // cb(null, shortid.generate() + "-" + file.originalname)
-      cb(null, path.basename(file.originalname, ext)+ Date.now() + ext)
-      // cb(null, Date.now().toString())
+      cb(null, Date.now().toString())
     }
   })
 })
-
-// const uploadS3 = multer({})
-
-
-//multer 설정
-// try {
-//   fs.readdirSync('uploads');
-// } catch(error) {
-//   console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
-//   fs.mkdirSync('uploads');
-// }
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, 'uploads/')
-//   },
-//   filename: function (req, file, cb) {    
-//     const ext = path.extname(file.originalname);
-//     cb(null, path.basename(file.originalname, ext)+ Date.now() + ext);
-//   },
-// })
-// const imageFilter = (req, file, cb) => {
-//       if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-//         return cb(new Error("Only image files are allowed!"));
-//       }
-//       cb(null, true);
-//     };
-// const upload = multer({storage : storage, limits : { filesize : 5 * 1024 * 1024 }, fileFilter: imageFilter })
-
-app.use('/image',express.static('./uploads'));
-app.use(session({
-  secret:"seashow",
-  resave: false,
-  saveUninitialized: true,
-}))
 
 const models = require('./models');
 models.sequelize.sync()
@@ -117,7 +81,7 @@ app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest); // 토큰 재�
 
 app.post('/review/create', indexRouter.review.postCreate); // 리뷰 포스팅
 app.post('/review/update', indexRouter.review.postUpdate); // 리뷰 수정
-app.get('/review', indexRouter.review.getRead); // 리뷰 리스트 불러오기
+app.post('/review/read', indexRouter.review.postRead); // 리뷰 리스트 불러오기
 app.post('/review', indexRouter.review.postDelete); // 리뷰 삭제
 
 app.post('/show', indexRouter.show.getList); // 공연 리스트 불러오기
