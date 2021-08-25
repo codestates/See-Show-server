@@ -1,12 +1,12 @@
 require('dotenv').config();
 const axios = require('axios')
-import jwt from 'jsonwebtoken'
+const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 cookieParser()
 
 module.exports = {
    //토큰유효성 검사
-   checkToken: async(req , res)=> {
+   checkToken: (req , res)=> {
       const { authorization } = req.headers
       if (!authorization) {
       return res.status(401).send({ message: 'Unauthorized' })
@@ -27,6 +27,8 @@ module.exports = {
                   let newAccessToken = jwt.sign(data, process.env.ACCESS_SECRET,{expiresIn:'1d'})
                   return newAccessToken
             }
+      }else{//accesstoken이 있는경우
+            return authorization
       }
   },
       
@@ -43,8 +45,9 @@ module.exports = {
 //       }
 
 //   }
-  getUserInfo: async(token)=>{
-      const userInfo= jwt.verify(token,process.env.ACCESS_SECRET)
+  getUserInfo: (token)=>{    
+      const puretoken = token.split(' ')[1]
+      const userInfo= jwt.verify(puretoken,process.env.ACCESS_SECRET)
       return userInfo
   }
 }

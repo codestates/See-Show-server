@@ -6,7 +6,7 @@ const util = require('./utilFunction')
 
 module.exports = async (req, res) => {
   // const authorization = req.headers["authorization"];
-  // const { genre, area } = req.body;
+  const { genre, area } = req.body;
   // if (!authorization) {
   //   res.status(404).send({ data: null, message: "invalid access token" });
   // }
@@ -25,14 +25,16 @@ module.exports = async (req, res) => {
     return res.status(400).send({ message: 'invalid refresh token, please log in again' })
   }
   const userinfo = util.getUserInfo(checktoken)
+  console.log(`thisisuserinfo`, userinfo)
   // if(toggle === 1){//토큰을 새로 받은 경우,
   //   verifytoken = await jwt.verify(token, process.env.ACCESS_SECRET);
     if(userinfo.nickname){//일반로그인
       await User.update({genre: genre, area: area, firstcheck: 0},{where: {nickname: userinfo.nickname}})
-      .then(()=> {
+      .then((resp)=> {
         //쿠키에 토큰넣기
+        const newuser = {...userinfo, genre, area}
         res.cookie("accesstoken", checktoken,{httpOnly:true})
-        return res.status(201).send({data: {accessToken : checktoken }, message: 'update database'})});
+        return res.status(201).send({data: {accessToken : checktoken, userinfo: newuser}, message: 'update database'})});
     } else if(userinfo.login){//깃헙로그인
 
       await github.update({genre: genre, area: area, firstcheck: 0}, {where: {login: userinfo.login}})

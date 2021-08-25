@@ -6,8 +6,8 @@ require('dotenv').config();
 
 module.exports = { 
   login: (req, res) => {
-    const { userId, password } = req.body;
-    User.findOne({where: {userId, password}})
+    const { nickname, password } = req.body;
+    User.findOne({where: {nickname, password}})
      .then(data => {
        if(!data){
          res.status(401).send({data: null, message: 'not authorized'})
