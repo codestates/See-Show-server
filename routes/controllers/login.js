@@ -15,10 +15,8 @@ module.exports = {
          delete data.dataValues.password;
          const accessToken = jwt.sign(data.dataValues, process.env.ACCESS_SECRET, { expiresIn: "15m" });//cookie
          const refreshToken = jwt.sign(data.dataValues, process.env.REFRESH_SECRET, { expiresIn: "30d" });//session
-        //  const tokens = [`refreshToken=${refreshToken}`, `accessToken=${accessToken}`];
-        req.session.refreshToken = refreshToken
-        console.log(`iam accessToken`, accessToken)
-        res.clearCookie("connect.sid");
+         console.log(`*** iam accessToken`, accessToken)
+         req.session.refreshToken = refreshToken
          res.cookie("accessToken", accessToken, {
            httpOnly: true,
          });
@@ -31,7 +29,10 @@ module.exports = {
      })
   },
   logout: (req,res) => {
-    delete req.headers.cookie;
+    res.clearCookie("accessToken");
+    if(req.session){
+      req.session.destroy()
+    }
     res.status(200).send('ok');
   }
 }

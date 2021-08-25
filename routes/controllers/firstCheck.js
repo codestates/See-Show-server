@@ -20,12 +20,13 @@ module.exports = async (req, res) => {
   //   token = await refreshTokenRequest(req)//새로운 accesstoken 받음
   //   toggle = 1;
   // }
-  const checktoken = util.checkToken(req,res)
+  const checktoken = util.checkToken(req)
   if(!checktoken){
     return res.status(400).send({ message: 'invalid refresh token, please log in again' })
   }
   const userinfo = util.getUserInfo(checktoken)
-  console.log(`thisisuserinfo`, userinfo)
+
+
   // if(toggle === 1){//토큰을 새로 받은 경우,
   //   verifytoken = await jwt.verify(token, process.env.ACCESS_SECRET);
     if(userinfo.nickname){//일반로그인

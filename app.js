@@ -49,6 +49,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // 서버 설정
+app.use(session({
+  secret:'seeshow',
+  resave:false,
+  saveUninitialized:true
+}))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
