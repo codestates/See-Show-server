@@ -10,7 +10,7 @@ const https = require('https');
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 const aws = require("aws-sdk")
-
+const session = require("express-session")
 require("dotenv").config();
 
 var router = express.Router();
@@ -65,6 +65,11 @@ var uploadS3 = multer({
 // const upload = multer({storage : storage, limits : { filesize : 5 * 1024 * 1024 }, fileFilter: imageFilter })
 
 app.use('/image',express.static('./uploads'));
+app.use(session({
+  secret:"seashow",
+  resave: false,
+  saveUninitialized: true,
+}))
 
 const models = require('./models');
 models.sequelize.sync()

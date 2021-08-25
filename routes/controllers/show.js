@@ -3,6 +3,8 @@ const convert = require('xml-js');
 const { show } = require('../../models');
 const {Op} = require('sequelize');
 const {decode} = require( 'html-entities');
+const util = require('./utilFunction')
+
 require('dotenv').config();
 
 module.exports = {
@@ -32,8 +34,7 @@ module.exports = {
     let thumbnail = "";
     if (req.file) {
       //thumbnail 받아오기
-      thumbnail =
-        "https://" + process.env.WEBSITE + "/image/" + req.file.filename;
+      thumbnail = req.file.location
     }
 
     const {

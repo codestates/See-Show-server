@@ -33,13 +33,13 @@ module.exports = async (req, res) => {
       .then((resp)=> {
         //쿠키에 토큰넣기
         const newuser = {...userinfo, genre, area}
-        res.cookie("accesstoken", checktoken,{httpOnly:true})
+        res.cookie("accessToken", checktoken,{httpOnly:true})
         return res.status(201).send({data: {accessToken : checktoken, userinfo: newuser}, message: 'update database'})});
     } else if(userinfo.login){//깃헙로그인
 
       await github.update({genre: genre, area: area, firstcheck: 0}, {where: {login: userinfo.login}})
       .then(()=> {
-        res.cookie("accesstoken", checktoken,{httpOnly:true})
+        res.cookie("accessToken", checktoken,{httpOnly:true})
         return res.status(201).send({data: {accessToken : checktoken }, message: 'update database'})
       });
     }

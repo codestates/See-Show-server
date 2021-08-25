@@ -1,10 +1,12 @@
 const { show } = require('../../models');
 const jwt = require('jsonwebtoken');
+const util = require('./utilFunction')
 
 module.exports = {
   location: async (req,res) =>{
-    const authorization = req.headers["authorization"];
-    if (!authorization) {
+    let token = await util.checkToken(req)
+    // const authorization = req.headers["authorization"];
+    if (!token) {
       await show.findAll({where: {area: '서울'}})
        .then(arr => {
          const list = arr.map(el => el.dataValues).slice(0,5);
@@ -12,17 +14,12 @@ module.exports = {
        })
       //  .catch(error => res.status(404))
     } else {
-      const token = authorization.split(" ")[1];
-      try {
-        jwt.verify(token, process.env.ACCESS_SECRET);
-      } catch (err) {
-        await show.findAll({where: {area: '서울'}})
-        .then(arr => {
-          const list = arr.map(el => el.dataValues).slice(0,5);
-          res.status(200).send({data: {list: list}, message: 'ok'})
-        })
-      }
-      const { area } = token;
+      // const token = authorization.split(" ")[1];
+      // try {
+      //   jwt.verify(token, process.env.ACCESS_SECRET);
+      // } catch (err) {
+      const user = util.getUserInfo(token)
+      const { area } = user;
       await show.findAll({where: {area: area}})
       .then(arr => {
         const getRandomNumber = (min, max) => {
@@ -34,25 +31,16 @@ module.exports = {
     }
   },
   genre: async (req,res) => {
-    const authorization = req.headers["authorization"];
-    if (!authorization) {
+    let token = await util.checkToken(req)
+    if (!token) {
       await show.findAll({where: {realmname: '음악'}})
        .then(arr => {
          const list = arr.map(el => el.dataValues).slice(0,5);
          res.status(200).send({data: {list: list}, message: 'ok'})
        })
-    }
-    const token = authorization.split(" ")[1];
-    try {
-      jwt.verify(token, process.env.ACCESS_SECRET);
-    } catch (err) {
-      await show.findAll({where: {realmname: '음악'}})
-       .then(arr => {
-         const list = arr.map(el => el.dataValues).slice(0,5);
-         res.status(200).send({data: {list: list}, message: 'ok'})
-       })
-    }
-    const { genre } = token;
+    }else{
+    const user = util.getUserInfo(token)
+    const { genre } = user;
     await show.findAll({where: {realmName: genre}})
      .then(arr => {
       const getRandomNumber = (min, max) => {
@@ -61,5 +49,6 @@ module.exports = {
       const list = arr.map(el => el.dataValues).splice(getRandomNumber(0, arr.dataValues.length - 6), 5);
       res.status(200).send({data: {list: list}, message: 'ok'})
      })
+    }
   }
 }
