@@ -32,13 +32,14 @@ module.exports = async (req, res) => {
         };
         const serverToken = jwt.sign(userinfo.dataValues, process.env.ACCESS_SECRET, { expiresIn: "15d" });
         const refreshToken = jwt.sign(userinfo.dataValues, process.env.REFRESH_SECRET, { expiresIn: "30d" });
-        res.cookie("refreshToken", refreshToken, {
+        req.session.refreshToken = refreshToken
+        res.cookie("accessToken", serverToken, {
           httpOnly: true,
         });
         if(userinfo.dataValues.firstcheck == 1){
-          res.status(201).send({data: {accessToken: serverToken, usertype: 'github', firstcheck: 1}, messege: 'ok'});
+          res.status(201).send({data: {usertype: 'github', firstcheck: 1}, messege: 'ok'});
         } else {
-          res.status(201).send({data: {accessToken: serverToken, usertype: 'github'}, messege: 'ok'});
+          res.status(201).send({data: {usertype: 'github'}, messege: 'ok'});
         }
       })
   }).catch(e => {

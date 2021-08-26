@@ -8,14 +8,32 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      show_id: {
-        type: Sequelize.INTEGER
+      showId: {
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'shows',
+          key: 'id'
+        }
       },
-      user_id: {
-        type: Sequelize.INTEGER
+      userId: {
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'users',
+          key: 'id'
+        }
       },
-      github_id: {
-        type: Sequelize.INTEGER
+      githubId: {
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'githubs',
+          key: 'id'
+        }
       },
       point: {
         type: Sequelize.STRING

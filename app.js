@@ -7,26 +7,60 @@ const indexRouter = require('./routes/index');
 const app = express();
 const fs = require('fs');
 const https = require('https');
-
+const multer = require('multer')
+const multerS3 = require('multer-s3')
+const aws = require("aws-sdk")
+const session = require("express-session")
 require("dotenv").config();
 
 var router = express.Router();
 
+//multer S3 설정
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACC_KEY,
+  secretAccessKey: process.env.AWS_SCR_KEY,
+})
 
+var uploadS3 = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'multer-s',
+    acl: 'public-read',
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString())
+    }
+  })
+})
+
+const models = require('./models');
+models.sequelize.sync()
+.then(()=> {
+  console.log('Connet Database')
+})
+.catch((err) =>{
+  console.log(err)
+})
 
 // 엔진 설정
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-
 // 서버 설정
+app.use(session({
+  secret:'seeshow',
+  resave:false,
+  saveUninitialized:true
+}))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["https://seeshow.live"],
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
   })
@@ -52,12 +86,12 @@ app.get('/refreshTokenRequest', indexRouter.refreshTokenRequest); // 토큰 재�
 
 app.post('/review/create', indexRouter.review.postCreate); // 리뷰 포스팅
 app.post('/review/update', indexRouter.review.postUpdate); // 리뷰 수정
-app.get('/review', indexRouter.review.getRead); // 리뷰 리스트 불러오기
+app.post('/review/read', indexRouter.review.postRead); // 리뷰 리스트 불러오기
 app.post('/review', indexRouter.review.postDelete); // 리뷰 삭제
 
 app.post('/show', indexRouter.show.getList); // 공연 리스트 불러오기
 app.post('/show/detail', indexRouter.show.detailInfo); // 공연 상세정보
-app.post('/show/posting', indexRouter.show.postMyShow); // 내 공연 등록
+app.post('/show/posting', uploadS3.single('thumbnail'),indexRouter.show.postMyShow); // 내 공연 등록
 
 app.post('/signUp', indexRouter.signUp.nat); // 자체 회원 가입
 
@@ -68,11 +102,8 @@ if(day !== today){
   indexRouter.show.updateDB();
 };
 
-const HTTPS_PORT = process.env.HTTPS_PORT || 8080;
+const HTTPS_PORT = process.env.HTTPS_PORT || 4000;
 
-// 인증서 파일들이 존재하는 경우에만 https 프로토콜을 사용하는 서버를 실행합니다. 
-// 만약 인증서 파일이 존재하지 않는경우, http 프로토콜을 사용하는 서버를 실행합니다.
-// 파일 존재여부를 확인하는 폴더는 서버 폴더의 package.json이 위치한 곳입니다.
 let server;
 if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
 
@@ -81,7 +112,7 @@ if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
   const credentials = { key: privateKey, cert: certificate };
 
   server = https.createServer(credentials, app);
-  server.listen(HTTPS_PORT, () => console.log("server runnning"));
+  server.listen(HTTPS_PORT, () => console.log(HTTPS_PORT,"server runnning"));
 
 } else {
   server = app.listen(HTTPS_PORT)
