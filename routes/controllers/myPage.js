@@ -1,22 +1,14 @@
 const { User, github } = require('../../models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const checkToken = require('./utilFunction')
+const util = require('./utilFunction')
 
 module.exports = {
   myPage: (req, res) => {
-      const data = checkToken(req)
+    const data = util.checkToken(req)
+    const user = util.getUserInfo(data)
 
-    // const authorization = req.headers["authorization"];
-    // if (!authorization) {
-    //   res.status(404).send({data: null, message: 'invalid access token'})
-    // }
-    // let token = authorization.split(" ")[1];
-    // try {
-    //   token = jwt.verify(token, process.env.ACCESS_SECRET);
-
-
-      const { nickname } = token;
+      const { nickname } = user;
       if(!!nickname){
         User.findOne({ where: { nickname } })
           .then((data) => {
@@ -30,7 +22,7 @@ module.exports = {
             console.log(err);
           });
       } else {
-        const { login } = token;
+        const { login } = user;
         github.findOne({ where: { login } })
           .then((data) => {
             if (!data) {
@@ -42,19 +34,18 @@ module.exports = {
             console.log(err);
           });
       }
-  },
+  // }
+  // catch(err){
+  //   console.log(err)
+  // }
+},
   withdraw: (req, res) => {
-    const authorization = req.headers["authorization"];
-    if (!authorization) {
-      res.status(404).send({data: null, message: 'invalid access token'})
+    const data = util.checkToken(req)
+    if(!data){
+      res.status(401).send({message: "No Authorization"})
     }
-    let token = authorization.split(" ")[1];
-    try {
-     token = jwt.verify(token, process.env.ACCESS_SECRET);
-    } catch (err) {
-      res.status(404).send({data: null, message: 'invalid access token'})
-    }
-    const { nickname } = token;
+    const user = util.getUserInfo(data)
+    const { nickname } = user;
     if(!!nickname){
       User.destroy({ where: { nickname } })
         .then((data) => {
@@ -67,19 +58,19 @@ module.exports = {
           console.log(err);
         });
     } else {
-      const { login } = token;
+      const { login } = user;
       github.findOne({ where: { login } })
         .then((data) => {
           if (!data) {
             return res.status(401).send('there is not user information');
           }
+          res.clearCookie("accessToken");
+          req.session.destroy()
           return res.status(201).send('withdraw success');
         })
         .catch((err) => {
           console.log(err);
         });
     }
-
-  }
-
+  },
 }

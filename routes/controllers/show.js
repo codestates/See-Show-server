@@ -3,6 +3,8 @@ const convert = require('xml-js');
 const { show } = require('../../models');
 const {Op} = require('sequelize');
 const {decode} = require( 'html-entities');
+const util = require('./utilFunction')
+
 require('dotenv').config();
 
 module.exports = {
@@ -28,6 +30,10 @@ module.exports = {
       });
   },
   postMyShow: async (req, res) => {
+    const data = util.checkToken(req);
+    if(!data){
+      res.status(401).send({message : "No Authorization"})
+    }else{
     //multer 적용할것.
     let thumbnail = "";
     if (req.file) {thumbnail =req.file.location}
@@ -51,6 +57,7 @@ module.exports = {
         })
         .then(() => res.status(201).send("upload complete"));
     }
+  }
   },
   updateDB: async () => {
     const today = new Date()

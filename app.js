@@ -10,7 +10,7 @@ const https = require('https');
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 const aws = require("aws-sdk")
-
+const session = require("express-session")
 require("dotenv").config();
 
 var router = express.Router();
@@ -49,6 +49,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // 서버 설정
+app.use(session({
+  secret:'seeshow',
+  resave:false,
+  saveUninitialized:true
+}))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
