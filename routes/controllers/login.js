@@ -8,6 +8,7 @@ module.exports = {
   login: (req, res) => {
     const { nickname, password } = req.body;
     User.findOne({where: {nickname, password}})
+
      .then(data => {
        if(!data){
          res.status(401).send({data: null, message: 'not authorized'})

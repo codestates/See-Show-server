@@ -6,7 +6,6 @@ module.exports = async(req) => {
   //쿠키가 없는경우 2
   if(!cookie) return 2;
   const realToken = cookie.split('refreshToken=')[1];
-  //jwt에 토큰담기
   let decode = await jwt.verify(realToken, process.env.REFRESH_SECRET)
   //jwt 에 userId가 있는 경우
   if(decode.userId){
