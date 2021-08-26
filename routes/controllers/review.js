@@ -92,9 +92,11 @@ module.exports = {
       return res.status(404).send("not found");
     } else {
       await review.destroy({where : {
-        showId : showId,
-        userId : userId,
-        githubId : githubId,
+        [Op.and] :[
+          {showId : showId},
+          {userId : userId},
+          {githubId : githubId},
+        ]
       }});
       return res.status(200).send("OK");
     }
@@ -114,7 +116,10 @@ module.exports = {
     })
     console.log("******* : ",reviewInfo )
     const reviewData = reviewInfo.map((el) => {
-      return {content : el.dataValues.content, point : el.dataValues.point, username : !!el.dataValues.userinfo.username ? el.dataValues.userinfo.username : el.dataValues.githubinfo.login}
+      return {
+        content : el.dataValues.content, 
+        point : el.dataValues.point, 
+        username : !!el.dataValues.userinfo.username ? el.dataValues.userinfo.username : el.dataValues.githubinfo.login}
       });
     
     if (!reviewInfo) { //입력한 정보가 데이터 베이스에 없을때(404 - notfound)
