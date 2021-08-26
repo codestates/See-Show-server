@@ -10,19 +10,25 @@ require('dotenv').config();
 module.exports = {
   getList: async (req, res) => {
     const { searchWord } = req.body;
+    console.log("******** searchWord :", req.body )
     await show
       .findAll({
         where: {
           [Op.or]: [
-            { title: searchWord },
-            { place: searchWord },
-            { realmName: searchWord },
-            { area: searchWord },
+            // { title: {[Op.like]: "%" + searchWord + "%"} },
+            // { place: {[Op.like]: "%" + searchWord + "%"} },
+            // { realmName: {[Op.like]: "%" + searchWord + "%"} },
+            // { area: {[Op.like]: "%" + searchWord + "%"} },
+            { title:  "%" + searchWord + "%" },
+            { place: "%" + searchWord + "%" },
+            { realmName: "%" + searchWord + "%" },
+            { area: "%" + searchWord + "%" },
           ],
         },
       })
       .then((arr) => {
         const list = arr.map((el) => el.dataValues);
+        console.log("******** result list : ", list )
         res.status(200).send({ showList: list });
       })
       .catch((err) => {

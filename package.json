@@ -30,7 +30,7 @@
     "nodemon": "^2.0.7",
     "pug": "^3.0.2",
     "sequelize": "^6.6.2",
-    "sessionstore": "^1.3.7",
+    "sessionstore": "^0.4.8",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
